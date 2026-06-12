@@ -8,6 +8,12 @@ import matplotlib.pyplot as plt
 import os
 from datetime import datetime, timedelta
 
+#==== CONEXIONES ====
+
+DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1515092627865731072/w2UXvtDWEyacRTUGFiXfArzo-q-YJ2Zp3oT_RWS7cdfFcVENHDcTRO97rBFuDOenYxre"
+
+#==== FIN CONEXIONES ====
+
 
 #====WEBHOOK====
 
@@ -21,7 +27,14 @@ def home():
 def webhook():
 
     data = request.json
+#==== MENSAJE ====
 
+    mensaje = """🚀 ABC SWING BOT 📈 BUY 🪙 BTCUSDT 💰 105000 """
+
+
+    requests.post(DISCORD_WEBHOOK_URL,json={"content": mensaje})
+#==== FIN MENSAJE ====
+  
     print("ALERTA RECIBIDA:")
     print(data)
 
