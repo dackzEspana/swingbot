@@ -25,56 +25,71 @@ def limpiar_symbol(symbol):
 
 #==== FIN LIMPIAR SYMBOL ====
 
-
-#==== OBTENER VELAS ====
+#====================================
+# OBTENER VELAS OKX
+#====================================
 
 def obtener_velas(symbol):
 
-    url = "https://www.okx.com/api/v5/market/candles"
+    symbol_okx = symbol.replace("USDT", "-USDT")
 
-    params = {
-        "instId": symbol,
-        "bar": "15m",
-        "limit": "50"
-    }
+    url = f"https://www.okx.com/api/v5/market/candles?instId={symbol_okx}&bar=15m&limit=50"
 
-    response = requests.get(url, params=params)
+    response = requests.get(url)
 
-    data = response.json()["data"]
+    data = response.json()
+
+    print("OKX RESPONSE:")
+    print(data)
+
+    velas = data["data"]
+
+    velas.reverse()
 
     df = pd.DataFrame(
-        data,
+        velas,
         columns=[
             "timestamp",
-            "open",
-            "high",
-            "low",
-            "close",
+            "Open",
+            "High",
+            "Low",
+            "Close",
             "volume",
-            "volCcy",
-            "volCcyQuote",
+            "vol2",
+            "vol3",
             "confirm"
         ]
     )
 
-    df = df.iloc[::-1]
+    df["Open"] = df["Open"].astype(float)
+    df["High"] = df["High"].astype(float)
+    df["Low"] = df["Low"].astype(float)
+    df["Close"] = df["Close"].astype(float)
 
-    df["timestamp"] = pd.to_datetime(
-        df["timestamp"].astype(float),
-        unit="ms"
+    # SOLO OHLC PARA MPLFINANCE
+    df = df[["Open", "High", "Low", "Close"]]
+
+    # Índice requerido por mplfinance
+    df.index = pd.date_range(
+        start="2024-01-01",
+        periods=len(df),
+        freq="min"
     )
 
-    df.set_index("timestamp", inplace=True)
+    print("COLUMNAS:")
+    print(df.columns)
 
-    df["open"] = df["open"].astype(float)
-    df["high"] = df["high"].astype(float)
-    df["low"] = df["low"].astype(float)
-    df["close"] = df["close"].astype(float)
+    print("TIPOS:")
+    print(df.dtypes)
+
+    print("ULTIMAS VELAS:")
+    print(df.tail())
 
     return df
 
-#==== FIN OBTENER VELAS ====
-
+#====================================
+# FIN OBTENER VELAS OKX
+#====================================
 
 #==== GENERAR GRAFICO ====
 
