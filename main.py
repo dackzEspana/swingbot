@@ -14,6 +14,60 @@ DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1515092627865731072/w2UX
 
 #==== FIN CONEXIONES ====
 
+#==== GRAFICO ===
+
+def generar_grafico(df, symbol):
+
+    mc = mpf.make_marketcolors(
+        up='#7CFC00',
+        down='#FF3B30',
+        edge='inherit',
+        wick='inherit'
+    )
+
+    estilo = mpf.make_mpf_style(
+        marketcolors=mc,
+        facecolor='#050B16',
+        figcolor='#050B16',
+        gridcolor='#1A2233'
+    )
+
+    mpf.plot(
+        df,
+        type='candle',
+        style=estilo,
+        volume=False,
+        axisoff=True,
+        tight_layout=True,
+        savefig=dict(
+            fname="grafico.png",
+            dpi=200,
+            bbox_inches="tight",
+            pad_inches=0
+        )
+    )
+
+    return "grafico.png"
+
+#==== FIN GRAFICO ====
+
+#==== GRAFICO EN IMAGEN ====
+
+plantilla = Image.open("Señal_Venta.png")
+
+grafico = Image.open("grafico.png")
+
+grafico = grafico.resize((1320, 520))
+
+plantilla.paste(
+    grafico,
+    (30, 520)
+)
+
+plantilla.save("resultado.png")
+
+#==== FINGRAFICO EN IMAGEN ====
+
 
 #====WEBHOOK====
 app = Flask(__name__)
