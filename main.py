@@ -16,7 +16,6 @@ DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1515092627865731072/w2UX
 
 
 #====WEBHOOK====
-
 app = Flask(__name__)
 
 @app.route("/")
@@ -27,20 +26,33 @@ def home():
 def webhook():
 
     data = request.json
-#==== MENSAJE ====
 
-    mensaje = """🚀 ABC SWING BOT 📈 BUY 🪙 BTCUSDT 💰 105000 """
+    signal = data.get("signal", "N/A")
+    symbol = data.get("symbol", "N/A")
+    price = data.get("price", "N/A")
 
+    mensaje = f"""
+🚀 ABC SWING BOT
 
-    requests.post(DISCORD_WEBHOOK_URL,json={"content": mensaje})
-#==== FIN MENSAJE ====
-  
-    print("ALERTA RECIBIDA:")
+📈 Señal: {signal}
+🪙 Par: {symbol}
+💰 Precio: {price}
+"""
+
+    requests.post(
+        DISCORD_WEBHOOK_URL,
+        json={"content": mensaje}
+    )
+
+    print("========== ALERTA RECIBIDA ==========")
     print(data)
+    print("=====================================")
 
     return jsonify({
         "status": "ok",
-        "message": "alerta recibida"
+        "signal": signal,
+        "symbol": symbol,
+        "price": price
     })
 
 if __name__ == "__main__":
