@@ -65,6 +65,7 @@ def obtener_velas(symbol):
     df["High"] = df["High"].astype(float)
     df["Low"] = df["Low"].astype(float)
     df["Close"] = df["Close"].astype(float)
+    df["volume"] = df["volume"].astype(float)
 
     # SOLO OHLC PARA MPLFINANCE
     df = df[["Open", "High", "Low", "Close"]]
