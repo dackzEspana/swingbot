@@ -117,10 +117,10 @@ def generar_grafico(df):
 def crear_imagen(signal, symbol, price):
 
     if signal == "BUY":
-        plantilla = Image.open("buy.png")
+        plantilla = Image.open("Señal_Compra.png")
 
     else:
-        plantilla = Image.open("sell.png")
+        plantilla = Image.open("Señal_Venta.png")
 
     grafico = Image.open("grafico.png")
 
