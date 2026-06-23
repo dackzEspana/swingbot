@@ -8,6 +8,17 @@ import matplotlib.pyplot as plt
 import os
 from datetime import datetime, timedelta
 
+# =========================================
+# APP
+# =========================================
+
+app = Flask(__name__)
+
+# =========================================
+# CONFIG
+# =========================================
+
+
 #==== CONEXIONES ====
 
 DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1515092627865731072/w2UXvtDWEyacRTUGFiXfArzo-q-YJ2Zp3oT_RWS7cdfFcVENHDcTRO97rBFuDOenYxre"
