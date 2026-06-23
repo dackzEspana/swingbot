@@ -153,7 +153,7 @@ def crear_grafico(df, tipo):
 # =========================================
 # CREAR IMAGEN
 # =========================================
-def crear_imagen(tipo, symbol, precio, rsi, df):
+def crear_imagen(tipo, symbol, precio, df):
 
     if tipo == "BUY":
 
