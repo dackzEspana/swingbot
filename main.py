@@ -344,6 +344,7 @@ def enviar_discord(imagen):
             },
         )
 
+
 # =========================================
 # WEBHOOK
 # =========================================
@@ -351,54 +352,67 @@ def enviar_discord(imagen):
 @app.route("/webhook", methods=["POST"])
 def webhook():
 
-    token = request.args.get("token")
+    try:
 
-    if token != WEBHOOK_TOKEN:
+        data = request.get_json()
+
+        print("===================================")
+        print("ALERTA RECIBIDA")
+        print(data)
+        print("===================================")
+
+        symbol = data.get("symbol", "BTCUSDT")
+        tipo = data.get("signal", "BUY")
+        precio = float(data.get("price", 0))
+
+        print(f"TIPO: {tipo}")
+        print(f"SYMBOL: {symbol}")
+        print(f"PRECIO: {precio}")
+
+        # ============================
+        # OBTENER VELAS
+        # ============================
+
+        df = obtener_velas(symbol)
+
+        # ============================
+        # CREAR IMAGEN
+        # ============================
+
+        imagen = crear_imagen(
+            tipo,
+            symbol,
+            precio,
+            df
+        )
+
+        # ============================
+        # ENVIAR DISCORD
+        # ============================
+
+        enviar_discord(imagen)
 
         return jsonify({
-            "error": "token invalido"
-        }), 401
+            "ok": True,
+            "tipo": tipo,
+            "symbol": symbol,
+            "precio": precio
+        })
 
-    data = request.get_json()
-    
-    symbol = data.get("symbol", "BTCUSDT")
-    
-    tipo = data.get("action", "BUY")
-    
-    precio = float(data.get("price", 0))
-    
-        # =====================================
-        # VELAS
-        # =====================================
-    df = obtener_velas(symbol)
-    
-        # =====================================
-        # EMA200
-        # =====================================
-    
-    #ema200 = df["Close"].ewm(span=200).mean().iloc[-1]
-    
-        # =====================================
-        # RSI
-        # =====================================
-    
-    rsi = RSIIndicator( df["Close"], window=14).rsi().iloc[-1]
-    
-        # =====================================
-        # CREAR IMAGEN
-        # =====================================
-    imagen = crear_imagen(tipo, symbol, precio, rsi, df)
-    
-        # =====================================
-        # ENVIAR
-        # =====================================
-    
-    enviar_telegram(imagen)
-    
-    enviar_discord(imagen)
-    
+    except Exception as e:
 
-    return jsonify({"ok": True, "tipo": tipo, "precio": precio})
+        print("ERROR WEBHOOK:")
+        print(str(e))
+
+        return jsonify({
+            "ok": False,
+            "error": str(e)
+        }), 500
+
+# =========================================
+# FIN WEBHOOK
+# =========================================
+
 
 # =========================================
 # HOME
