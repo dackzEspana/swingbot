@@ -14,21 +14,9 @@ DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1515092627865731072/w2UX
 
 #==== FIN CONEXIONES ====
 
-#==== LIMPIAR SYMBOL ====
-
-def limpiar_symbol(symbol):
-
-    symbol = symbol.replace(".P", "")
-    symbol = symbol.replace("USDT", "-USDT")
-
-    return symbol
-
-#==== FIN LIMPIAR SYMBOL ====
-
-#====================================
+# =========================================
 # OBTENER VELAS OKX
-#====================================
-
+# =========================================
 def obtener_velas(symbol):
 
     symbol_okx = symbol.replace("USDT", "-USDT")
@@ -38,9 +26,6 @@ def obtener_velas(symbol):
     response = requests.get(url)
 
     data = response.json()
-
-    print("OKX RESPONSE:")
-    print(data)
 
     velas = data["data"]
 
@@ -57,165 +42,388 @@ def obtener_velas(symbol):
             "volume",
             "vol2",
             "vol3",
-            "confirm"
-        ]
+            "confirm",
+        ],
     )
 
     df["Open"] = df["Open"].astype(float)
     df["High"] = df["High"].astype(float)
     df["Low"] = df["Low"].astype(float)
     df["Close"] = df["Close"].astype(float)
-    df["volume"] = df["volume"].astype(float)
 
-    # SOLO OHLC PARA MPLFINANCE
-    df = df[["Open", "High", "Low", "Close"]]
-
-    # Índice requerido por mplfinance
+   
     df.index = pd.date_range(
         start="2024-01-01",
         periods=len(df),
         freq="min"
     )
 
-    print("COLUMNAS:")
-    print(df.columns)
-
-    print("TIPOS:")
-    print(df.dtypes)
-
-    print("ULTIMAS VELAS:")
-    print(df.tail())
-
     return df
 
-#====================================
-# FIN OBTENER VELAS OKX
-#====================================
+# =========================================
+# CREAR GRAFICO
+# =========================================
 
-#==== GENERAR GRAFICO ====
+def crear_grafico(df, tipo):
 
-def generar_grafico(df):
+    datos = df.tail(50).copy()
 
     mc = mpf.make_marketcolors(
-        up='#7CFC00',
-        down='#FF3B30',
-        edge='inherit',
-        wick='inherit'
+        up="#00ff00",
+        down="#ff0000",
+        wick="inherit",
+        edge="inherit",
+        volume="inherit"
     )
 
     estilo = mpf.make_mpf_style(
         marketcolors=mc,
-        facecolor='#050B16',
-        figcolor='#050B16',
-        gridcolor='#1A2233'
+        facecolor="none",
+        figcolor="none",
+        gridcolor="#111"
     )
 
-    mpf.plot(
-        df,
-        type='candle',
+    archivo = f"grafico_{tipo}.png"
+
+    fig, ax = mpf.plot(
+        datos,
+        type="candle",
         style=estilo,
-        volume=False,
-        axisoff=True,
+        figsize=(8, 5),
+        returnfig=True,
+        axisoff=False,
         tight_layout=True,
-        savefig=dict(
-            fname="grafico.png",
-            dpi=200,
-            bbox_inches="tight",
-            pad_inches=0
-        )
     )
 
-#==== FIN GENERAR GRAFICO ====
+    # =====================================
+    # LINEA PRECIO
+    # =====================================
 
+    precio_actual = datos["Close"].iloc[-1]
 
-#==== CREAR IMAGEN ====
+    color_linea = "#39ff14" if tipo == "BUY" else "#ff3131"
 
-def crear_imagen(signal, symbol, price):
+    ax[0].plot(
+        [len(datos)-1, len(datos)+4],
+        [precio_actual, precio_actual],
+        color=color_linea,
+        linestyle="--",
+        linewidth=1.2,
+    )
 
-    if signal == "BUY":
-        plantilla = Image.open("Señal_Compra.png")
+    ax[0].text(
+        len(datos)+4.5,
+        precio_actual,
+        f"{precio_actual:.2f}",
+        color=color_linea,
+        fontsize=11,
+        va="center",
+        ha="left",
+        bbox=dict(
+            facecolor="black",
+            edgecolor=color_linea,
+            boxstyle="round,pad=0.25"
+        ),
+    )
+
+    fig.savefig(
+        archivo,
+        bbox_inches="tight",
+        pad_inches=0,
+        dpi=100,
+        transparent=True
+    )
+
+    plt.close(fig)
+
+    return archivo
+
+# =========================================
+# CREAR IMAGEN
+# =========================================
+def crear_imagen(tipo, symbol, precio, rsi, df):
+
+    if tipo == "BUY":
+
+        fondo = Image.open("Señal_Compra.png")
+
+        color = "#39ff14"
 
     else:
-        plantilla = Image.open("Señal_Venta.png")
 
-    grafico = Image.open("grafico.png")
+        fondo = Image.open("Señal_Venta.png")
 
-    # AJUSTAREMOS ESTAS MEDIDAS DESPUES
-    grafico = grafico.resize((1320, 520))
+        color = "#ff3131"
 
-    plantilla.paste(
-        grafico,
-        (30, 500)
+    draw = ImageDraw.Draw(fondo)
+
+    font_mediana = ImageFont.truetype(
+        "BOOKOS.TTF",
+        28
     )
 
-    plantilla.save("senal_final.png")
+    # =====================================
+    # PAR
+    # =====================================
 
-    return "senal_final.png"
+    draw.text(
+        (45, 290),
+        symbol,
+        fill="white",
+        font=ImageFont.truetype(
+            "comicbd.ttf",
+            24
+        ),
+    )
 
-#==== FIN CREAR IMAGEN ====
+    # =====================================
+    # TEMPORALIDAD
+    # =====================================
+
+    #draw.text(
+        #(200, 300),
+        #interval,
+        #fill="white",
+        #font=ImageFont.truetype(
+            #"BOOKOS.ttf",
+           # 26
+       # ),
+    #)
+
+    # =====================================
+    # PRECIO
+    # =====================================
+
+    draw.text(
+        (40, 445),
+        f"{round(precio, 2)}",
+        fill=color,
+        font=font_mediana
+   )
+
+    # =====================================
+    # EMA200
+    # =====================================
+
+    #draw.text(
+        #(45, 350),
+        #f"{round(ema200, 2)}",
+        #fill=color,
+        #font=font_mediana
+    #)
+
+    # =====================================
+    # RSI
+    # =====================================
+
+    draw.text(
+        (45, 597),
+        f"{rsi:.2f}",
+        fill=color,
+        font=font_mediana
+    )
 
 
-#==== ENVIAR DISCORD ====
+    # =====================================
+    # HORA
+    # =====================================
 
-def enviar_discord():
+    hora = (datetime.utcnow() - timedelta(hours=6)).strftime("%H:%M:%S")
 
-    with open("senal_final.png", "rb") as file:
+    draw.text(
+        (380, 847),
+        hora,
+        fill="white",
+        font=ImageFont.truetype(
+            "BOOKOS.TTF",
+            14
+        ),
+    )
+    
+
+    # =====================================
+    # FUERZA
+    # =====================================
+
+    #draw.text(
+         #(670, 700),
+        # "ALTA",
+         #fill=color,
+        # font=ImageFont.truetype(
+          #   "BOOKOS.TTF",
+         #    20
+        # ),
+   #  )
+
+    # =====================================
+    # GRAFICO
+    # =====================================
+
+    chart = Image.open(crear_grafico(df, tipo))
+    chart = chart.resize((400, 300))
+
+    
+    if tipo == "BUY":
+    
+        fondo.paste(chart, (240, 420))
+        
+        qr = Image.open("QR.jpg")
+        
+        qr = qr.resize((100, 120))
+        
+        fondo.paste(qr, (570, 920))
+        
+        fecha = datetime.now().strftime("%d/%m/%Y")
+        
+        draw.text((157, 847), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 12), )
+    else:
+    
+        fondo.paste(chart, (220, 420))
+        
+        qr = Image.open("QR.jpg")
+        
+        qr = qr.resize((100, 120))
+        
+        fondo.paste(qr, (570, 920))
+        
+        fecha = datetime.now().strftime("%d/%m/%Y")
+        
+        draw.text((157, 847), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 13), )
+    
+   
+    archivo = f"{tipo}.png"
+    fondo.save(archivo)
+    
+    return archivo
+
+
+# =========================================
+# TELEGRAM
+# =========================================
+
+def enviar_telegram(imagen):
+
+    telegram_foto = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
+
+    with open(imagen, "rb") as f:
 
         requests.post(
-            DISCORD_WEBHOOK_URL,
+            telegram_foto,
+            data={
+                "chat_id": CHAT_ID
+            },
             files={
-                "file": file
+                "photo": f
             }
         )
 
-#==== FIN ENVIAR DISCORD ====
+# =========================================
+# DISCORD
+# =========================================
 
+def enviar_discord(imagen):
 
-#==== WEBHOOK ====
+    with open(imagen, "rb") as f:
 
-app = Flask(__name__)
+        requests.post(
+            DISCORD_WEBHOOK,
+            files={
+                "file": f
+            },
+        )
 
-@app.route("/")
-def home():
-    return "SwingBot Online"
-
+# =========================================
+# WEBHOOK
+# =========================================
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
 
-    data = request.json
+    token = request.args.get("token")
 
-    signal = data["signal"]
-    symbol_tv = data["symbol"]
-    price = data["price"]
+    if token != WEBHOOK_TOKEN:
 
-    symbol_okx = limpiar_symbol(symbol_tv)
+        return jsonify({
+            "error": "token invalido"
+        }), 401
 
-    df = obtener_velas(symbol_okx)
+    data = request.get_json()
+    
+    symbol = data.get("symbol", "BTCUSDT")
+    
+    tipo = data.get("action", "BUY")
+    
+    precio = float(data.get("price", 0))
+    
+        # =====================================
+        # VELAS
+        # =====================================
+    df = obtener_velas(symbol)
+    
+        # =====================================
+        # EMA200
+        # =====================================
+    
+    #ema200 = df["Close"].ewm(span=200).mean().iloc[-1]
+    
+        # =====================================
+        # RSI
+        # =====================================
+    
+    rsi = RSIIndicator( df["Close"], window=14).rsi().iloc[-1]
+    
+        # =====================================
+        # CREAR IMAGEN
+        # =====================================
+    imagen = crear_imagen(tipo, symbol, precio, rsi, df)
+    
+        # =====================================
+        # ENVIAR
+        # =====================================
+    
+    enviar_telegram(imagen)
+    
+    enviar_discord(imagen)
+    
 
-    generar_grafico(df)
+    return jsonify({"ok": True, "tipo": tipo, "precio": precio})
 
-    crear_imagen(
-        signal,
-        symbol_tv,
-        price
-    )
+# =========================================
+# HOME
+# =========================================
 
-    enviar_discord()
+@app.route("/")
+def home():
+
+    return "BOT ACTIVO 🔥"
+
+# =========================================
+# HEALTH
+# =========================================
+
+@app.route("/health")
+def health():
 
     return jsonify({
         "status": "ok"
     })
 
-#==== FIN WEBHOOK ====
+# =========================================
 
+# START
 
-#==== APP ====
+# =========================================
 
 if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        port=8000
+
+    port = int(
+        os.environ.get("PORT", 5000)
     )
 
-#==== FIN APP ====
+    app.run(
+        host="0.0.0.0",
+        port=port,
+        debug=False
+    )
+
+
