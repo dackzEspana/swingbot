@@ -225,18 +225,6 @@ def crear_imagen(tipo, symbol, precio, df):
     #)
 
     # =====================================
-    # RSI
-    # =====================================
-
-    draw.text(
-        (45, 597),
-        f"{rsi:.2f}",
-        fill=color,
-        font=font_mediana
-    )
-
-
-    # =====================================
     # HORA
     # =====================================
 
@@ -308,26 +296,6 @@ def crear_imagen(tipo, symbol, precio, df):
     
     return archivo
 
-
-# =========================================
-# TELEGRAM
-# =========================================
-
-def enviar_telegram(imagen):
-
-    telegram_foto = f"https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto"
-
-    with open(imagen, "rb") as f:
-
-        requests.post(
-            telegram_foto,
-            data={
-                "chat_id": CHAT_ID
-            },
-            files={
-                "photo": f
-            }
-        )
 
 # =========================================
 # DISCORD
