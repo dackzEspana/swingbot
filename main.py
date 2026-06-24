@@ -263,12 +263,12 @@ def crear_imagen(tipo, symbol, precio, df):
     # =====================================
 
     chart = Image.open(crear_grafico(df, tipo))
-    chart = chart.resize((820, 320))
+    chart = chart.resize((850, 350))
 
     
     if tipo == "BUY":
     
-        fondo.paste(chart, (35, 750))
+        fondo.paste(chart, (35, 720))
         
         qr = Image.open("QR.jpg")
         
@@ -281,7 +281,7 @@ def crear_imagen(tipo, symbol, precio, df):
         draw.text((160, 1150), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 18), )
     else:
     
-        fondo.paste(chart, (35, 750))
+        fondo.paste(chart, (35, 720))
         
         qr = Image.open("QR.jpg")
         
