@@ -184,7 +184,7 @@ def crear_imagen(tipo, symbol, precio, df):
         fill="white",
         font=ImageFont.truetype(
             "comicbd.ttf",
-            30
+            33
         ),
     )
 
@@ -207,10 +207,13 @@ def crear_imagen(tipo, symbol, precio, df):
     # =====================================
 
     draw.text(
-        (770, 550),
+        (750, 550),
         f"{round(precio, 2)}",
         fill=color,
-        font=font_mediana
+        font=ImageFont.truetype(
+            "comicbd.ttf",
+            33
+        ),
    )
 
     # =====================================
@@ -231,7 +234,7 @@ def crear_imagen(tipo, symbol, precio, df):
     hora = (datetime.utcnow() - timedelta(hours=6)).strftime("%H:%M:%S")
 
     draw.text(
-        (480, 1100),
+        (500, 1150),
         hora,
         fill="white",
         font=ImageFont.truetype(
@@ -265,17 +268,17 @@ def crear_imagen(tipo, symbol, precio, df):
     
     if tipo == "BUY":
     
-        fondo.paste(chart, (35, 650))
+        fondo.paste(chart, (35, 700))
         
         qr = Image.open("QR.jpg")
         
         qr = qr.resize((140, 160))
         
-        fondo.paste(qr, (800, 1200))
+        fondo.paste(qr, (780, 1250))
         
         fecha = datetime.now().strftime("%d/%m/%Y")
         
-        draw.text((160, 1100), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 16), )
+        draw.text((160, 1150), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 18), )
     else:
     
         fondo.paste(chart, (35, 650))
@@ -284,11 +287,11 @@ def crear_imagen(tipo, symbol, precio, df):
         
         qr = qr.resize((140, 160))
         
-        fondo.paste(qr, (800, 1200))
+        fondo.paste(qr, (780, 1250))
         
         fecha = datetime.now().strftime("%d/%m/%Y")
         
-        draw.text((160, 1100), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 16), )
+        draw.text((160, 1100), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 18), )
     
    
     archivo = f"{tipo}.png"
