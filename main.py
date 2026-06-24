@@ -239,7 +239,7 @@ def crear_imagen(tipo, symbol, precio, df):
         fill="white",
         font=ImageFont.truetype(
             "BOOKOS.TTF",
-            16
+            18
         ),
     )
     
@@ -272,26 +272,26 @@ def crear_imagen(tipo, symbol, precio, df):
         
         qr = Image.open("QR.jpg")
         
-        qr = qr.resize((140, 160))
+        qr = qr.resize((150, 170))
         
-        fondo.paste(qr, (780, 1250))
+        fondo.paste(qr, (780, 1230))
         
         fecha = datetime.now().strftime("%d/%m/%Y")
         
         draw.text((160, 1150), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 18), )
     else:
     
-        fondo.paste(chart, (35, 650))
+        fondo.paste(chart, (35, 700))
         
         qr = Image.open("QR.jpg")
         
-        qr = qr.resize((140, 160))
+        qr = qr.resize((150, 170))
         
-        fondo.paste(qr, (780, 1250))
+        fondo.paste(qr, (780, 1230))
         
         fecha = datetime.now().strftime("%d/%m/%Y")
         
-        draw.text((160, 1100), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 18), )
+        draw.text((160, 1150), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 18), )
     
    
     archivo = f"{tipo}.png"
