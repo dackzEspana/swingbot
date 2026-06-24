@@ -101,7 +101,7 @@ def crear_grafico(df, tipo):
         datos,
         type="candle",
         style=estilo,
-        figsize=(8, 5),
+        figsize=(10, 5),
         returnfig=True,
         axisoff=False,
         tight_layout=True,
@@ -111,32 +111,32 @@ def crear_grafico(df, tipo):
     # LINEA PRECIO
     # =====================================
 
-    precio_actual = datos["Close"].iloc[-1]
+   # precio_actual = datos["Close"].iloc[-1]
 
-    color_linea = "#39ff14" if tipo == "BUY" else "#ff3131"
+    #color_linea = "#39ff14" if tipo == "BUY" else "#ff3131"
 
-    ax[0].plot(
-        [len(datos)-1, len(datos)+4],
-        [precio_actual, precio_actual],
-        color=color_linea,
-        linestyle="--",
-        linewidth=1.2,
-    )
+    #ax[0].plot(
+     #   [len(datos)-1, len(datos)+4],
+     #   [precio_actual, precio_actual],
+      #  color=color_linea,
+      #  linestyle="--",
+       # linewidth=1.2,
+   # )
 
-    ax[0].text(
-        len(datos)+4.5,
-        precio_actual,
-        f"{precio_actual:.2f}",
-        color=color_linea,
-        fontsize=11,
-        va="center",
-        ha="left",
-        bbox=dict(
-            facecolor="black",
-            edgecolor=color_linea,
-            boxstyle="round,pad=0.25"
-        ),
-    )
+   # ax[0].text(
+    #    len(datos)+4.5,
+      #  precio_actual,
+      #  f"{precio_actual:.2f}",
+      #  color=color_linea,
+     #   fontsize=11,
+     #   va="center",
+       # ha="left",
+     #   bbox=dict(
+    #        facecolor="black",
+    #        edgecolor=color_linea,
+    #        boxstyle="round,pad=0.25"
+    #    ),
+  #  )
 
     fig.savefig(
         archivo,
@@ -268,7 +268,7 @@ def crear_imagen(tipo, symbol, precio, df):
     
     if tipo == "BUY":
     
-        fondo.paste(chart, (35, 700))
+        fondo.paste(chart, (35, 750))
         
         qr = Image.open("QR.jpg")
         
@@ -281,7 +281,7 @@ def crear_imagen(tipo, symbol, precio, df):
         draw.text((160, 1150), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 18), )
     else:
     
-        fondo.paste(chart, (35, 700))
+        fondo.paste(chart, (35, 750))
         
         qr = Image.open("QR.jpg")
         
