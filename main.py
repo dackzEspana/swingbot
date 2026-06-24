@@ -184,7 +184,7 @@ def crear_imagen(tipo, symbol, precio, df):
         fill="white",
         font=ImageFont.truetype(
             "comicbd.ttf",
-            24
+            30
         ),
     )
 
@@ -207,7 +207,7 @@ def crear_imagen(tipo, symbol, precio, df):
     # =====================================
 
     draw.text(
-        (800, 550),
+        (770, 550),
         f"{round(precio, 2)}",
         fill=color,
         font=font_mediana
@@ -231,12 +231,12 @@ def crear_imagen(tipo, symbol, precio, df):
     hora = (datetime.utcnow() - timedelta(hours=6)).strftime("%H:%M:%S")
 
     draw.text(
-        (450, 1000),
+        (480, 1100),
         hora,
         fill="white",
         font=ImageFont.truetype(
             "BOOKOS.TTF",
-            14
+            16
         ),
     )
     
@@ -265,30 +265,30 @@ def crear_imagen(tipo, symbol, precio, df):
     
     if tipo == "BUY":
     
-        fondo.paste(chart, (35, 595))
+        fondo.paste(chart, (35, 650))
         
         qr = Image.open("QR.jpg")
         
         qr = qr.resize((140, 160))
         
-        fondo.paste(qr, (650, 1300))
+        fondo.paste(qr, (800, 1200))
         
         fecha = datetime.now().strftime("%d/%m/%Y")
         
-        draw.text((160, 1000), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 14), )
+        draw.text((160, 1100), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 16), )
     else:
     
-        fondo.paste(chart, (35, 595))
+        fondo.paste(chart, (35, 650))
         
         qr = Image.open("QR.jpg")
         
-        qr = qr.resize((120, 140))
+        qr = qr.resize((140, 160))
         
-        fondo.paste(qr, (650, 1300))
+        fondo.paste(qr, (800, 1200))
         
         fecha = datetime.now().strftime("%d/%m/%Y")
         
-        draw.text((160, 1000), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 14), )
+        draw.text((160, 1100), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 16), )
     
    
     archivo = f"{tipo}.png"
