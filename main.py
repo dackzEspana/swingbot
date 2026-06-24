@@ -171,7 +171,7 @@ def crear_imagen(tipo, symbol, precio, df):
 
     font_mediana = ImageFont.truetype(
         "BOOKOS.TTF",
-        28
+        35
     )
 
     # =====================================
@@ -179,7 +179,7 @@ def crear_imagen(tipo, symbol, precio, df):
     # =====================================
 
     draw.text(
-        (45, 290),
+        (60, 550),
         symbol,
         fill="white",
         font=ImageFont.truetype(
@@ -207,7 +207,7 @@ def crear_imagen(tipo, symbol, precio, df):
     # =====================================
 
     draw.text(
-        (40, 445),
+        (800, 550),
         f"{round(precio, 2)}",
         fill=color,
         font=font_mediana
@@ -231,7 +231,7 @@ def crear_imagen(tipo, symbol, precio, df):
     hora = (datetime.utcnow() - timedelta(hours=6)).strftime("%H:%M:%S")
 
     draw.text(
-        (380, 847),
+        (450, 1000),
         hora,
         fill="white",
         font=ImageFont.truetype(
@@ -260,35 +260,35 @@ def crear_imagen(tipo, symbol, precio, df):
     # =====================================
 
     chart = Image.open(crear_grafico(df, tipo))
-    chart = chart.resize((400, 300))
+    chart = chart.resize((820, 320))
 
     
     if tipo == "BUY":
     
-        fondo.paste(chart, (240, 420))
+        fondo.paste(chart, (35, 595))
         
         qr = Image.open("QR.jpg")
         
-        qr = qr.resize((100, 120))
+        qr = qr.resize((140, 160))
         
-        fondo.paste(qr, (570, 920))
+        fondo.paste(qr, (650, 1300))
         
         fecha = datetime.now().strftime("%d/%m/%Y")
         
-        draw.text((157, 847), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 12), )
+        draw.text((160, 1000), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 14), )
     else:
     
-        fondo.paste(chart, (220, 420))
+        fondo.paste(chart, (35, 595))
         
         qr = Image.open("QR.jpg")
         
-        qr = qr.resize((100, 120))
+        qr = qr.resize((120, 140))
         
-        fondo.paste(qr, (570, 920))
+        fondo.paste(qr, (650, 1300))
         
         fecha = datetime.now().strftime("%d/%m/%Y")
         
-        draw.text((157, 847), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 13), )
+        draw.text((160, 1000), fecha, fill="white", font=ImageFont.truetype("BOOKOS.TTF", 14), )
     
    
     archivo = f"{tipo}.png"
