@@ -22,7 +22,7 @@ app = Flask(__name__)
 #==== CONEXIONES ====
 
 WEBHOOK_TOKEN = "Dackz_Signals_X9pL2"
-DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1515092627865731072/w2UXvtDWEyacRTUGFiXfArzo-q-YJ2Zp3oT_RWS7cdfFcVENHDcTRO97rBFuDOenYxre"
+DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1520565085410427040/lsiStWvKbuzh72Jndblow8j9EKEFCeYmAkdwKmBW9k-uCjXeYPtlAQ-gSATlw-ZzuAIq"
 
 #==== FIN CONEXIONES ====
 
